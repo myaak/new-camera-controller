@@ -8,26 +8,22 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ZonesList from './ZonesList'
 import CameraSettingsButtons from './Buttons'
 import './CameraSettings.scss'
-import axios from 'axios'
-import { serverUrl } from '../../server-info'
+import { modifyCamera } from '../../http/modifyCamera'
 
 export default function CameraSettings() {
 
   const selectedCamera = useAppSelector(state => state.currentCamera.selectedCamera)
   const cameraArray = useAppSelector(state => state.cameraArray)
 
+  const dispatch = useAppDispatch()
+
   const [cameraName, setCameraName] = useState<string>('')
   const [cameraLink, setCameraLink] = useState<string>('')
   const [period, setPeriod] = useState<number | null>(null)
   const [onError, setOnError] = useState<boolean>(false)
-  const [isLoading, setLoading] = useState<boolean>(false)
 
   const navigate = useNavigate()
-
   const itemID = useLocation().pathname.replace(/\D/g, "")
-
-
-  const dispatch = useAppDispatch()
 
   const updateCameraInfo = (e: FormEvent, name: string, link: string) => {
     e.preventDefault()
@@ -36,7 +32,6 @@ export default function CameraSettings() {
       setOnError(true)
       return
     }
-
 
     if ((cameraName === selectedCamera?.name) && (cameraLink === selectedCamera?.link) && (period === selectedCamera?.processDelay)) {
       setOnError(true)
@@ -50,12 +45,14 @@ export default function CameraSettings() {
       processDelay: period
     }
 
-    axios.post(`${serverUrl}/post/modify/camera`, JSON.stringify({
+    const cameraDataToPost = {
       id: selectedCamera.id,
       name: name,
       link: link,
       processDelay: period
-    }))
+    }
+
+    modifyCamera(cameraDataToPost) 
 
     dispatch(updateCamera(newCameraObject))
     dispatch(updateSelectedCamera(newCameraObject))
@@ -64,7 +61,6 @@ export default function CameraSettings() {
   const isCurrentCamera = () => {
 
     if (selectedCamera !== undefined) {
-      console.log('123')
       setCameraName(selectedCamera.name)
       setCameraLink(selectedCamera.link)
       setPeriod(selectedCamera.processDelay)
@@ -72,7 +68,6 @@ export default function CameraSettings() {
     }
 
     if (selectedCamera?.id === undefined || selectedCamera?.id === null || selectedCamera?.id !== Number(itemID)) {
-
 
       const updatedCamera = cameraArray.cameraArray.find((item: any) => {
         if (item.id === Number(itemID)) {
@@ -99,15 +94,14 @@ export default function CameraSettings() {
     return () => {
       clearInterval(blink)
     }
-
   }
 
   useEffect(() => {
-      isCurrentCamera()
+    isCurrentCamera()
     if (cameraArray.isLoading) {
       navigate('/cameras')
     }
-  }, [selectedCamera, cameraArray.isLoading, isLoading])
+  }, [selectedCamera, cameraArray.isLoading])
 
   useEffect(() => {
     blinkingPlacholder()
@@ -151,17 +145,14 @@ export default function CameraSettings() {
             <div className="camera-settings__underline"></div>
           </>
         }
-
         <CameraSettingsButtons />
-
-
       </div>
     </div>
   )
     :
-    (
-      <div className="camera-settings__container">
-        <div className="camera-settings__title">Камеры не существует.</div>
-      </div>
-    )
+  (
+    <div className="camera-settings__container">
+      <div className="camera-settings__title">Камеры не существует.</div>
+    </div>
+  )
 }

@@ -16,3 +16,8 @@ export interface IAreaPoints {
   x: number
   y: number
 }
+
+export interface IPostNewArea {
+  id: number | null
+  areas: string
+}
