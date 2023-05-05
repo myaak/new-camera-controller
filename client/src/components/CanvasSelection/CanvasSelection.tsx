@@ -1,7 +1,6 @@
-import axios from 'axios'
 import { useRef, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { serverUrl } from '../../server-info'
+import { postNewArea } from '../../http/postArea'
 import { openAddAreaModal } from '../../store/Reducers/cameraAddReducer'
 import { updateCamera } from '../../store/Reducers/cameraReducer'
 import { updateSelectedCamera } from '../../store/Reducers/cameraSelectionReducer'
@@ -59,7 +58,6 @@ const CanvasSelection = () => {
       startY = parseInt((event.clientY - canvBounds.top).toString());
       currentPoints.push({
         x: startX, y: startY,
-        dist: 0
       })
     }
 
@@ -70,7 +68,6 @@ const CanvasSelection = () => {
       if (connectWithStart) {
         currentPoints.push({
           x: currentPoints[0].x, y: currentPoints[0].y,
-          dist: 0
         })
         connectWithStart = false
         setEndSelection(true)
@@ -78,7 +75,6 @@ const CanvasSelection = () => {
       } else {
         currentPoints.push({
           x: startX, y: startY,
-          dist: Math.sqrt(Math.pow((currentPoints[0].x - startX), 2) + Math.pow((currentPoints[0].y - startY), 2))
         })
       }
 
@@ -184,10 +180,7 @@ const CanvasSelection = () => {
     }
   }
 
-  const clientWidthRef = useRef(window.innerWidth)
-
   useEffect(() => {
-
     if (canvasRef.current == null) return;
     canvasRef.current.onmousedown = mouseDown
     canvasRef.current.onmouseup = mouseUp
@@ -214,14 +207,19 @@ const CanvasSelection = () => {
 
   }, [startLoading, endSelection, activeSelection.activeAdding])
 
-  // add zone callback
-
+  const cancelAreaAdding = () => {
+    shapesList.pop()
+    setEndSelection(false)
+    dispatch(stopAddingToCamera())
+    draw_shapes(ctxRef.current)
+  }
 
   const confirmAdding = () => {
     dispatch(openAddAreaModal(true))
     currentPoints = []
   }
 
+  // add zone func
   const onSubmitAdding = async (title: string) => {
 
     const cameraWithNewArea = {
@@ -235,17 +233,12 @@ const CanvasSelection = () => {
       ]
     }
 
-    try {
-      const newObjectToPost = {
-        id: selectedCamera.id,
-        areas: JSON.stringify(cameraWithNewArea.areas)
-      }
-
-      await axios.post(`${serverUrl}/post/newArea`, JSON.stringify(newObjectToPost))
-
-    } catch (error) {
-      console.log(error)
+    const newObjectToPost = {
+      id: selectedCamera.id,
+      areas: JSON.stringify(cameraWithNewArea.areas)
     }
+
+    postNewArea(newObjectToPost)
 
     setEndSelection(false)
     dispatch(updateSelectedCamera(cameraWithNewArea))
@@ -254,17 +247,10 @@ const CanvasSelection = () => {
     dispatch(stopAddingToCamera())
   }
 
-  const cancelAreaAdding = () => {
-    shapesList.pop()
-    setEndSelection(false)
-    dispatch(stopAddingToCamera())
-    draw_shapes(ctxRef.current)
-  }
-
   return (
     <>
       {openedAddArea && <AreaAdd onPress={(title) => onSubmitAdding(title)} />}
-      <canvas ref={canvasRef} id="canvas" width={1280} height={720}/>
+      <canvas ref={canvasRef} id="canvas" width={1280} height={720} />
       {endSelection &&
         <div className="canvas__button-div">
           <h2>Добавить зону с текущим рисунком?</h2>

@@ -7,7 +7,6 @@ import './Cameras.scss'
 import { openAddCameraModal } from "../../store/Reducers/cameraAddReducer"
 import { closeCanvas, updateSelectedCamera } from "../../store/Reducers/cameraSelectionReducer"
 import { useNavigate } from "react-router-dom"
-import { useLocation } from "react-router-dom"
 
 
 
@@ -19,8 +18,6 @@ export default function CamerasList() {
 
 
   const navigate = useNavigate()
-
-  const itemID = useLocation().pathname.replace(/\D/g, "")
 
   const addCameraOpen = () => {
     if (selectedCamera.openedCanvas) {

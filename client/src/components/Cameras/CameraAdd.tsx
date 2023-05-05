@@ -3,28 +3,20 @@ import { Input } from '@chakra-ui/react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { openAddCameraModal } from '../../store/Reducers/cameraAddReducer'
 import { addCamera } from '../../store/Reducers/cameraReducer'
-import { serverUrl } from '../../server-info'
-import axios from 'axios'
 import { openCanvas } from '../../store/Reducers/cameraSelectionReducer'
+import { postNewCamera } from '../../http/postCamera'
 
 export default function CameraAdd() {
 
   const cameras = useAppSelector(state => state.cameraArray.cameraArray)
   const selectedCamera = useAppSelector(state => state.currentCamera.selectedCamera)
 
+  const dispatch = useAppDispatch()
+
   const [cameraName, setCameraName] = useState<string>('')
   const [cameraLink, setCameraLink] = useState<string>('')
   const [cameraProcessDelay, setCameraProcessDelay] = useState<number>(5)
   const [onError, setError] = useState<boolean>(false)
-
-  const dispatch = useAppDispatch()
-
-  const closeWindow = () => {
-    cameras.map((item: any) => item.id === selectedCamera.id ?
-      item.openedCanvas === true ? dispatch(openCanvas()) : null : null
-    )
-    dispatch(openAddCameraModal(false))
-  }
 
   const addCameraHandler = async (name: string, link: string) => {
     if (name === '') {
@@ -39,23 +31,28 @@ export default function CameraAdd() {
       processDelay: cameraProcessDelay,
     }
 
-    try {
-      const response = await axios.post(`${serverUrl}/post/camera`, JSON.stringify(newPostCamera))
+    const response = await postNewCamera(newPostCamera)
 
+    if (response) {
       const newCameraObject = {
         ...response.data,
         areas: JSON.parse(response.data.areas),
         openedCanvas: false
       }
 
-      console.log(newCameraObject)
-
       dispatch(addCamera(newCameraObject))
-    } catch (err) {
-      console.log(err)
     }
 
     closeWindow()
+    canvasPreviousState()
+  }
+
+  const closeWindow = () => {
+    canvasPreviousState()
+    dispatch(openAddCameraModal(false))
+  }
+
+  const canvasPreviousState = () => {
     cameras.map((item: any) => item.id === selectedCamera.id ?
       item.openedCanvas === true ? dispatch(openCanvas()) : null : null
     )

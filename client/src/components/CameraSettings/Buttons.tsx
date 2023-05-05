@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { removeCamera, updateCamera } from "../../store/Reducers/cameraReducer"
+import { removeCamera } from "../../store/Reducers/cameraReducer"
 import { removeSelectedCamera, updateSelectedCamera } from "../../store/Reducers/cameraSelectionReducer"
-import { startAddingToCamera, stopAddingToCamera } from "../../store/Reducers/CanvasReducer"
+import { startAddingToCamera } from "../../store/Reducers/CanvasReducer"
 
 export default function CameraSettingsButtons() {
 
@@ -44,26 +44,6 @@ export default function CameraSettingsButtons() {
     }
 
   }
-
-  /*
-
-  const newArea = {
-
-  }
-
-  const newCamera = {
-    ...selectedCamera,
-    areas: [
-      ...selectedCamera.areas,
-
-    ]
-  }
-
-  // dispatch(updateCamera({
-  //   ...selectedCamera
-  // }))
-}
-*/
 
   const deleteCameraHandler = () => {
     dispatch(removeCamera(selectedCamera.id))

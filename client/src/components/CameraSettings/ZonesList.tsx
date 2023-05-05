@@ -2,7 +2,6 @@ import { useEffect } from "react"
 import { useAppSelector } from "../../app/hooks"
 import ZonesItem from "./ZonesItem"
 
-
 export default function ZonesList() {
 
   const areas = useAppSelector(state => state.currentCamera.selectedCamera.areas)
@@ -19,5 +18,4 @@ export default function ZonesList() {
       }
     </ul>
   )
-  // доделать чтобы если зон нет ул вообще не рисовался, чтобы было смещение по флекс гроу, если появились зоны ( у кнопок)
 }
