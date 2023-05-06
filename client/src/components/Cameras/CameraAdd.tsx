@@ -15,7 +15,7 @@ export default function CameraAdd() {
 
   const [cameraName, setCameraName] = useState<string>('')
   const [cameraLink, setCameraLink] = useState<string>('')
-  const [cameraProcessDelay, setCameraProcessDelay] = useState<number>(5)
+  const [cameraProcessDelay, setCameraProcessDelay] = useState<string>('')
   const [onError, setError] = useState<boolean>(false)
 
   const addCameraHandler = async (name: string, link: string) => {
@@ -28,7 +28,7 @@ export default function CameraAdd() {
       name: name,
       link: link,
       areas: JSON.stringify([]),
-      processDelay: cameraProcessDelay,
+      processDelay: Number(cameraProcessDelay),
     }
 
     const response = await postNewCamera(newPostCamera)
@@ -62,15 +62,14 @@ export default function CameraAdd() {
     let blink: any
 
     if (onError) {
-      blink = setInterval(() => {
+      blink = setTimeout(() => {
         setError(false)
       }, 200)
     }
 
     return () => {
-      clearInterval(blink)
+      clearTimeout(blink)
     }
-
   }
 
   useEffect(() => {
@@ -102,7 +101,10 @@ export default function CameraAdd() {
           </div>
           <div>
             <div>Интервал обработки</div>
-            <Input placeholder={`По умолчанию ${cameraProcessDelay}`} value={cameraProcessDelay} onChange={(e) => setCameraProcessDelay(Number(e.target.value))} />
+            <Input placeholder={`По умолчанию 5`}
+              value={cameraProcessDelay}
+              onChange={(e) => setCameraProcessDelay(e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, ''))}
+              pattern="[0-9]+" />
           </div>
         </form>
         <div className="camera-add__item__buttons">
