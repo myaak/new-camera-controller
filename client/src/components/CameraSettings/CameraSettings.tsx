@@ -19,7 +19,7 @@ export default function CameraSettings() {
 
   const [cameraName, setCameraName] = useState<string>('')
   const [cameraLink, setCameraLink] = useState<string>('')
-  const [period, setPeriod] = useState<number | null>(null)
+  const [period, setPeriod] = useState<string>('')
   const [onError, setOnError] = useState<boolean>(false)
 
   const navigate = useNavigate()
@@ -33,7 +33,7 @@ export default function CameraSettings() {
       return
     }
 
-    if ((cameraName === selectedCamera?.name) && (cameraLink === selectedCamera?.link) && (period === selectedCamera?.processDelay)) {
+    if ((cameraName === selectedCamera?.name) && (cameraLink === selectedCamera?.link) && (Number(period) === selectedCamera?.processDelay)) {
       setOnError(true)
       return
     }
@@ -52,7 +52,7 @@ export default function CameraSettings() {
       processDelay: period
     }
 
-    modifyCamera(cameraDataToPost) 
+    modifyCamera(cameraDataToPost)
 
     dispatch(updateCamera(newCameraObject))
     dispatch(updateSelectedCamera(newCameraObject))
@@ -61,9 +61,9 @@ export default function CameraSettings() {
   const isCurrentCamera = () => {
 
     if (selectedCamera !== undefined) {
-      setCameraName(selectedCamera.name)
-      setCameraLink(selectedCamera.link)
-      setPeriod(selectedCamera.processDelay)
+      setCameraName(selectedCamera?.name)
+      setCameraLink(selectedCamera?.link)
+      setPeriod(String(selectedCamera?.processDelay))
 
     }
 
@@ -126,7 +126,7 @@ export default function CameraSettings() {
           </div>
           <div>
             <div>Период обработки</div>
-            <input type="numeric" value={Number(period)} onChange={(e) => setPeriod(Number(e.target.value))} />
+            <input type="numeric" value={Number(period)} onChange={(e) => setPeriod(e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, ''))} />
           </div>
           <div className="camera-settings__buttons">
             <button
@@ -150,9 +150,9 @@ export default function CameraSettings() {
     </div>
   )
     :
-  (
-    <div className="camera-settings__container">
-      <div className="camera-settings__title">Камеры не существует.</div>
-    </div>
-  )
+    (
+      <div className="camera-settings__container">
+        <div className="camera-settings__title">Камеры не существует.</div>
+      </div>
+    )
 }

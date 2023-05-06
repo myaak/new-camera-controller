@@ -13,10 +13,13 @@ export default function CameraAdd() {
 
   const dispatch = useAppDispatch()
 
+
   const [cameraName, setCameraName] = useState<string>('')
   const [cameraLink, setCameraLink] = useState<string>('')
   const [cameraProcessDelay, setCameraProcessDelay] = useState<string>('')
   const [onError, setError] = useState<boolean>(false)
+
+  const DEFAULT_PROCESS_DELAY = 5
 
   const addCameraHandler = async (name: string, link: string) => {
     if (name === '') {
@@ -28,7 +31,7 @@ export default function CameraAdd() {
       name: name,
       link: link,
       areas: JSON.stringify([]),
-      processDelay: Number(cameraProcessDelay),
+      processDelay: cameraProcessDelay !== '' ? Number(cameraProcessDelay) : DEFAULT_PROCESS_DELAY,
     }
 
     const response = await postNewCamera(newPostCamera)
@@ -53,7 +56,7 @@ export default function CameraAdd() {
   }
 
   const canvasPreviousState = () => {
-    cameras.map((item: any) => item.id === selectedCamera.id ?
+    cameras.map((item: any) => item.id === selectedCamera?.id ?
       item.openedCanvas === true ? dispatch(openCanvas()) : null : null
     )
   }

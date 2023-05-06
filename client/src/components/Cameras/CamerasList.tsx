@@ -20,7 +20,7 @@ export default function CamerasList() {
   const navigate = useNavigate()
 
   const addCameraOpen = () => {
-    if (selectedCamera.openedCanvas) {
+    if (selectedCamera?.openedCanvas) {
       dispatch(closeCanvas())
     }
     dispatch(openAddCameraModal(true))
