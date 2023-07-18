@@ -1,0 +1,21 @@
+.alert__window {
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: #0676ed;
+  width: 360px;
+  max-width: 90%;
+  border-radius: 12px;
+  padding: 16px 22px 17px 20px;
+  color: white;
+  margin: 1rem;
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+.open {
+  min-height: 67px;
+  opacity: 1;
+}
+

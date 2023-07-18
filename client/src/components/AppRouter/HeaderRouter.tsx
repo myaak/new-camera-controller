@@ -1,6 +1,5 @@
-import { Routes, Route } from 'react-router-dom'
-import { NavbarRoutes } from './routes'
-
+import { Routes, Route } from "react-router-dom";
+import { NavbarRoutes } from "./routes";
 
 export default function HeaderRouter() {
   return (
@@ -9,5 +8,5 @@ export default function HeaderRouter() {
         <Route key={index} path={item.path} element={item.element} />
       ))}
     </Routes>
-  )
+  );
 }
