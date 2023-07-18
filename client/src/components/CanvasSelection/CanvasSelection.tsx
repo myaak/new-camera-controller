@@ -7,6 +7,7 @@ import { updateSelectedCamera } from "../../store/Reducers/cameraSelectionReduce
 import { stopAddingToCamera } from "../../store/Reducers/CanvasReducer";
 import AreaAdd from "./AreaAdd";
 import "./CanvasSelection.scss";
+import { IShapesList, IPoint } from "./CanvasSelectionModels";
 
 const CanvasSelection = () => {
   const selectedCamera = useAppSelector((state) => state.currentCamera.selectedCamera);
@@ -23,9 +24,9 @@ const CanvasSelection = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef(canvasRef.current?.getContext("2d"));
 
-  let shapesList: any = [];
+  let shapesList: IShapesList = [];
 
-  let currentPoints: any = [];
+  let currentPoints: IPoint[] = [];
   let clicked: boolean = false;
   let moved: boolean = false;
   let connectWithStart: boolean = false;
@@ -34,17 +35,13 @@ const CanvasSelection = () => {
   let mouseX: number;
   let mouseY: number;
 
-  const pointsRef = useRef<Array<any>>([...currentPoints]);
-  const shapesListRef = useRef<Array<any>>(shapesList);
+  const pointsRef = useRef<IPoint[]>([...currentPoints]);
+  const shapesListRef = useRef<IShapesList>(shapesList);
 
   const mouseDown = function (event: MouseEvent) {
-    if (!activeSelection.activeAdding) {
-      return;
-    }
+    if (!activeSelection.activeAdding) return;
 
-    if (endSelection) {
-      return;
-    }
+    if (endSelection) return;
 
     const canvBounds: any = canvasRef.current?.getBoundingClientRect();
     if (canvBounds == undefined) return;
