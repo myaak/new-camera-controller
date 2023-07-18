@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from "react"
-import { pureStreamUrl, NNStreamUrl } from "../../server-info"
-import '../CanvasSelection/CanvasSelection.scss'
-
+import { useEffect, useRef, useState } from "react";
+import { pureStreamUrl, NNStreamUrl } from "../../server-info";
+import "../CanvasSelection/CanvasSelection.scss";
 
 export default function Video() {
-  const [src, setSrc] = useState<string>('')
-  const [counter, setCounter] = useState<number>(0)
-  const [NNStream, setNNStream] = useState<boolean>()
+  const [src, setSrc] = useState<string>("");
+  const [counter, setCounter] = useState<number>(0);
+  const [NNStream, setNNStream] = useState<boolean>();
 
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const ctxRef = useRef(canvasRef.current?.getContext('2d'))
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef(canvasRef.current?.getContext("2d"));
 
   /*
   const drawImage = () => {
@@ -37,14 +36,19 @@ export default function Video() {
 
   return (
     <>
-      <button style={{
-        position: 'absolute',
-        top: '2rem',
-        right: '2rem'
-      }}
-        onClick={() => {setNNStream((prev) => !prev)}}
-      >{NNStream ? "Включить обычный поток" : "Включить обработанный поток"}</button>
-      <img src={NNStream ? NNStreamUrl : pureStreamUrl} id="video"/>
+      <button
+        style={{
+          position: "absolute",
+          top: "2rem",
+          right: "2rem"
+        }}
+        onClick={() => {
+          setNNStream((prev) => !prev);
+        }}
+      >
+        {NNStream ? "Включить обычный поток" : "Включить обработанный поток"}
+      </button>
+      <img src={NNStream ? NNStreamUrl : pureStreamUrl} id="video" />
     </>
-  )
+  );
 }

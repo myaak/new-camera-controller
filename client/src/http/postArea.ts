@@ -3,13 +3,11 @@ import { serverUrl } from "../server-info";
 import axios from "axios";
 
 const postNewArea = async (newObjectToPost: IPostNewArea) => {
-    try {
-      await axios.post(`${serverUrl}/post/newArea`, JSON.stringify(newObjectToPost))
+  try {
+    await axios.post(`${serverUrl}/post/newArea`, JSON.stringify(newObjectToPost));
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-    } catch (error) {
-      console.log(error)
-    }
-}
-
-export { postNewArea }
-
+export { postNewArea };
